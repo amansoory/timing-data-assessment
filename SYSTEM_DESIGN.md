@@ -18,6 +18,26 @@ graph TD
     Cache --> LLM["LLM Service (Claude API)"]
 ```
 
+<details>
+<summary>View text-based diagram</summary>
+┌──────────────────┐     ┌───────────────┐     ┌──────────────────┐
+│  Client          │────▶│  API Layer    │────▶│  PostgreSQL      │
+│  (Web/Mobile)    │     │  (FastAPI)    │     │  (Primary DB)    │
+└──────────────────┘     └──────┬────────┘     └──────────────────┘
+│                        │
+┌──────▼────────┐     ┌────────▼─────────┐
+│  Redis Cache  │     │  Read Replicas   │
+└───────────────┘     └──────────────────┘
+│
+┌─────────────┼─────────────┐
+▼             ▼              ▼
+┌──────────────┐ ┌──────────┐ ┌──────────────────┐
+│ Celery       │ │ Sync     │ │ LLM Service      │
+│ (Batch Recs) │ │ Workers  │ │ (Claude API)     │
+└──────────────┘ └──────────┘ └──────────────────┘
+
+</details>
+
 The flow: users interact through the client, which hits the API layer. The API reads from Redis for fast cached results or falls back to Postgres. Behind the scenes, three worker types handle the heavy lifting — batch recommendation generation, real-time interaction syncing, and LLM calls. These are separated because they scale differently. Batch is predictable and scheduled. Sync is bursty. LLM calls are sporadic and expensive.
 
 

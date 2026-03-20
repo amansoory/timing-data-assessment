@@ -75,3 +75,30 @@ Christopher Johnson (Mentor) — No valid last contact date
 ## Part 3 — System Design
 
 See [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) for the full writeup.
+
+
+## Design Decisions
+
+- **Separated `parse_date()` into its own function** — I wanted it reusable across both `broken_service.py` and `data_processor.py`, and having it isolated makes it easy to test on its own.
+- **Priority map instead of if/else chains** — a dictionary lookup is cleaner and if Timing ever adds new relationship types (like "cofounder" or "recruiter"), you just add one line instead of another elif.
+- **Made the threshold configurable** — `get_contacts_to_reach_out()` takes a `threshold` parameter instead of hardcoding 30 days. Different users might want different windows.
+- **Logging instead of print statements** — production code uses loggers. It's a small thing but it shows awareness of how real systems work.
+- **Built a Streamlit dashboard** — the assessment didn't ask for a UI for Option 2, but I wanted to show that I can go beyond requirements and build something a user could actually interact with. The filters and sorting actually work against the data.
+
+## Assumptions
+
+- Dates follow YYYY-MM-DD format
+- Each contact has a single role (not comma-separated like "mentor, investor")
+- Missing dates are a data quality issue, not an implicit signal for urgency
+- Future dates are data entry mistakes and should be skipped
+- The CSV is small enough to fit in memory (no need for streaming or chunked reads)
+
+## What I'd Improve With More Time
+
+- Wire up a FastAPI backend so the recommendation engine runs as a real API
+- Connect the Streamlit UI to the API instead of reading directly from the CSV
+- Add LLM-powered message generation using Claude's API and click a contact and get a personalized follow-up message
+- Build a CI/CD pipeline with GitHub Actions running pytest on every push
+- Dockerize the whole thing so it runs consistently anywhere
+- Add more CSV format validation (duplicate emails, encoding issues, extremely old dates)
+- Expand the test suite with integration tests that run against the full pipeline end to end

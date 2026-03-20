@@ -70,12 +70,11 @@ If two contacts share the same role priority, the one you haven't talked to in l
 
 Output:
 
-Trisha Rodriguez — Investor — 836 days
-Sarah Chen — Mentor — 440 days
-
-DATA QUALITY FLAGS:
-
-Christopher Johnson (Mentor) — No valid last contact date
+> 1. Trisha Rodriguez — Investor — 836 days
+> 2. Sarah Chen — Mentor — 800 days
+>
+> DATA QUALITY FLAGS:
+> - Christopher Johnson (Mentor) — No valid last contact date
 
 
 ---

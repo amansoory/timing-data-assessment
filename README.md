@@ -93,7 +93,7 @@ I built a Streamlit dashboard to visualize the data and make the recommendation 
 - Data quality flags for contacts with missing dates
 - Themed to match Timing's brand
 
-The filters and sorting aren't cosmetic — they actually modify the data shown in the table and the recommendations update accordingly. You can verify the priority logic is working correctly by removing roles and watching the recommendations shift.
+The filters and sorting aren't cosmetic, they actually modify the data shown in the table and the recommendations update accordingly. You can verify the priority logic is working correctly by removing roles and watching the recommendations shift.
 
 ---
 

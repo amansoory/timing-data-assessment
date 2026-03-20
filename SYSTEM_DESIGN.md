@@ -7,23 +7,19 @@ Timing's core product is a networking assistant that tracks relationship history
 This isn't just a CRUD app at that point. It's a daily batch compute problem, a real-time sync problem, and a personalization problem all at once.
 
 ### Architecture
-┌──────────────────┐     ┌───────────────┐     ┌──────────────────┐
-│  Client          │────▶│  API Layer    │────▶│  PostgreSQL     │
-│  (Web/Mobile)    │     │  (FastAPI)    │     │  (Primary DB)    │
-└──────────────────┘     └──────┬────────┘     └──────────────────┘
-│                        │
-┌──────▼────────┐     ┌────────▼─────────┐
-│  Redis Cache  │     │  Read Replicas   │
-└───────────────┘     └──────────────────┘
-│
-┌─────────────┼─────────────┐
-▼             ▼              ▼
-┌──────────────┐ ┌──────────┐ ┌──────────────────┐
-│ Celery       │ │ Sync     │ │ LLM Service      │
-│ (Batch Recs) │ │ Workers  │ │ (Claude API)     │
-└──────────────┘ └──────────┘ └──────────────────┘
+```mermaid
+graph TD
+    Client["Client (Web/Mobile)"] --> API["API Layer (FastAPI)"]
+    API --> DB["PostgreSQL (Primary DB)"]
+    API --> Cache["Redis Cache"]
+    DB --> Replicas["Read Replicas"]
+    Cache --> Batch["Celery (Batch Recs)"]
+    Cache --> Sync["Sync Workers"]
+    Cache --> LLM["LLM Service (Claude API)"]
+```
 
-The API layer handles everything the user sees — loading their dashboard, fetching recommendations, triggering message generation. Behind it, three worker types handle the heavy lifting:
+The flow: users interact through the client, which hits the API layer. The API reads from Redis for fast cached results or falls back to Postgres. Behind the scenes, three worker types handle the heavy lifting — batch recommendation generation, real-time interaction syncing, and LLM calls. These are separated because they scale differently. Batch is predictable and scheduled. Sync is bursty. LLM calls are sporadic and expensive.
+
 
 - **Batch workers** — generate nightly recommendations for every user
 - **Sync workers** — process real-time interaction events (Timing detects you emailed someone, a calendar meeting ended, etc.) and update contact records immediately

@@ -4,8 +4,8 @@
 
 You'll need Python 3.10+ and pip.
 ```bash
-git clone https://github.com/amansoory/timing-assessment.git
-cd timing-assessment
+git clone https://github.com/amansoory/timing-data-assessment.git
+cd timing-data-assessment
 python -m venv venv
 
 # Windows
@@ -27,7 +27,15 @@ Run the data processor:
 python data_processor.py
 ```
 
+Run the dashboard:
+```bash
+streamlit run app.py
+```
+
+Or view it live: [https://timing-data-assessment.streamlit.app](https://timing-data-assessment.streamlit.app)
+
 ---
+
 
 ## Part 1 — Debugging broken_service.py
 
@@ -69,6 +77,25 @@ DATA QUALITY FLAGS:
 
 Christopher Johnson (Mentor) — No valid last contact date
 
+
+---
+
+## Bonus — Interactive Dashboard
+
+I built a Streamlit dashboard to visualize the data and make the recommendation engine interactive. It wasn't required for Option 2 but I wanted to show the system actually working in a way you can play with, not just terminal output.
+
+**Features:**
+- Full contact table with all 6 contacts displayed
+- Search bar that filters by name, email, or role in real time
+- Role filter to toggle which relationship types are shown
+- Sort by priority, recency, or alphabetically
+- Top 3 recommendations generated using the same priority logic from Part 2
+- Data quality flags for contacts with missing dates
+- Themed to match Timing's brand
+
+The filters and sorting aren't cosmetic — they actually modify the data shown in the table and the recommendations update accordingly. You can verify the priority logic is working correctly by removing roles and watching the recommendations shift.
+
+---
 
 
 
